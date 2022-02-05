@@ -1,26 +1,31 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ToDo.API.Entities
 {
     public class ToDoItem
     {
-        /// <example>123</example>>
+        [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        /// <example>To do item name</example>>
+        [Required]
         [MaxLength(30)]
         public string Name { get; set; } = null!;
 
-        /// <example>To do item description</example>>
         public string? Description { get; set; }
 
-        /// <example>3</example>>
+        [Required]
         [Range(1, 3)]
         public int Priority { get; set; }
 
-        /// <example>false</example>>
+        [Required]
         public bool IsCompleted { get; set; }
+
+        [Required]
+        public DateTime CreatedDate { get; set; }
+
+        public DateTime UpdatedDate { get; set; }
     }
 }
