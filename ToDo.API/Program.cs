@@ -1,6 +1,6 @@
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using ToDo.API.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);

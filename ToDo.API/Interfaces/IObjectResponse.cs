@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ToDo.API.Interfaces;
+﻿namespace ToDo.API.Interfaces;
 
 #nullable disable
 
