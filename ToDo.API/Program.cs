@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var defaultConnectionString = string.Empty;
-if (builder.Environment.EnvironmentName == "Development")
+if (builder.Environment.IsDevelopment())
 {
     defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 }
