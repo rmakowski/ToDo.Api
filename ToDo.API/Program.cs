@@ -22,7 +22,7 @@ else
     var database = hostSide.Split("/")[1].Split("?")[0];
     defaultConnectionString = $"Host={host};Database={database};Username={user};Password={password};SSL Mode=Require;Trust Server Certificate=true";
 }
-builder.Services.AddDbContext<ToDoContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString(defaultConnectionString)));
+builder.Services.AddDbContext<ToDoContext>(options => options.UseNpgsql(defaultConnectionString));
 var serviceProvider = builder.Services.BuildServiceProvider();
 try
 {
