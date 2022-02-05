@@ -111,8 +111,8 @@ namespace ToDo.API.Controllers.v1
         /// <response code="200">ToDoItem added OK</response>
         /// <param name="toDoItem">ToDoItem to add</param>
         [HttpPost]
-        [ProducesResponseType(typeof(ServiceResponse<ToDoItem?>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<ServiceResponse<ToDoItem?>>> PostToDoItem(AddToDoItem toDoItem)
+        [ProducesResponseType(typeof(ServiceResponse<GetToDoItem?>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<ServiceResponse<GetToDoItem?>>> PostToDoItem(AddToDoItem toDoItem)
         {
             try
             {
@@ -126,12 +126,12 @@ namespace ToDo.API.Controllers.v1
                     CreatedDate = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
-                return Ok(ServiceResponse<ToDoItem?>.Ok(result.Entity));
+                return Ok(ServiceResponse<GetToDoItem?>.Ok(result.Entity.Select(Models.Responses.GetToDoItem.Map)));
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
-                return BadRequest(ServiceResponse<ToDoItem?>.Error(null, exception.Message));
+                return BadRequest(ServiceResponse<GetToDoItem?>.Error(null, exception.Message));
             }
         }
 
