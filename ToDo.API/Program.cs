@@ -39,6 +39,11 @@ builder.Services.AddSwaggerGen(swaggerGenOptions =>
     swaggerGenOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
 });
 
+builder.Services.AddCors(corsOptions => corsOptions.AddPolicy("cors", corsPolicyBuilder =>
+{
+    corsPolicyBuilder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -63,9 +68,7 @@ if (app.Environment.IsDevelopment())
         swaggerUiOptions.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDo.API.v1");
     });
 }
-
+app.UseCors("cors");
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
