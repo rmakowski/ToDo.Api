@@ -161,4 +161,77 @@ public class ToDoItemsController : ControllerBase
             return BadRequest(ServiceResponse<bool?>.Error(null, exception.Message));
         }
     }
+
+    /// <summary>
+    /// Reset database with default values
+    /// </summary>
+    /// <response code="200">Reset database OK</response>
+    [HttpGet("reset")]
+    [ProducesResponseType(typeof(ServiceResponse<bool?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ServiceResponse<bool?>), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ServiceResponse<bool?>>> ResetDatabase()
+    {
+        var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"ToDoItems\" RESTART IDENTITY;");
+            await _context.ToDoItems.AddRangeAsync(new List<ToDoItem>
+            {
+                new()
+                {
+                    Name = "Read book",
+                    Description = "Read at least 10 books",
+                    IsCompleted = false,
+                    Priority = 2,
+                    CreatedDate = DateTime.UtcNow.AddSeconds(-713822),
+                    UpdatedDate = DateTime.UtcNow.AddSeconds(-713822)
+                },
+                new()
+                {
+                    Name = "Go to the shop",
+                    Description = "Buy: bread, butter, cheese",
+                    IsCompleted = false,
+                    Priority = 1,
+                    CreatedDate = DateTime.UtcNow.AddSeconds(-1412),
+                    UpdatedDate = DateTime.UtcNow.AddSeconds(-1293)
+                },
+                new()
+                {
+                    Name = "Call to grandpa",
+                    Description = null,
+                    IsCompleted = true,
+                    Priority = 3,
+                    CreatedDate = DateTime.UtcNow.AddSeconds(-713222),
+                    UpdatedDate = DateTime.UtcNow.AddSeconds(-7222)
+                },
+                new()
+                {
+                    Name = "Clean house",
+                    Description = null,
+                    IsCompleted = false,
+                    Priority = 2,
+                    CreatedDate = DateTime.UtcNow.AddSeconds(-713622),
+                    UpdatedDate = DateTime.UtcNow.AddSeconds(-713622)
+                },
+                new()
+                {
+                    Name = "Do homework",
+                    Description = "Math, Chem",
+                    IsCompleted = true,
+                    Priority = 1,
+                    CreatedDate = DateTime.UtcNow.AddSeconds(-78374),
+                    UpdatedDate = DateTime.UtcNow.AddSeconds(-7834)
+                }
+            });
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return Ok(ServiceResponse<bool?>.Ok(true));
+        }
+        catch (Exception exception)
+        {
+            await transaction.RollbackAsync();
+            Console.WriteLine(exception);
+            return BadRequest(ServiceResponse<bool?>.Error(null, exception.Message));
+        }
+    }
 }
