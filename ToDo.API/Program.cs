@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using ToDo.API.Contexts;
-using ToDo.API.Extensions;
-using ToDo.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,11 +43,6 @@ builder.Services.AddCors(corsOptions => corsOptions.AddPolicy("cors", corsPolicy
 {
     corsPolicyBuilder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
-
-builder.Services.AddCronJob<CleanDatabaseService>(scheduleConfig =>
-{
-    scheduleConfig.CronExpression = @"0 0 * * *";
-});
 
 var app = builder.Build();
 
