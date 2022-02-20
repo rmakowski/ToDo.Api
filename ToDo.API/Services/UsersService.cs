@@ -33,7 +33,7 @@ public class UsersService : IUsersService
         {
             var user = await _context.Users
                            .Include(usr => usr.ToDoItems)
-                           .FirstOrDefaultAsync(usr => usr.Login.Equals(loginRequest.Login) && usr.Password.Equals(loginRequest.Password)) ??
+                           .FirstOrDefaultAsync(usr => usr.Login.Equals(loginRequest.Login) && CheckPassword(loginRequest.Password, usr.Password)) ??
                            throw new KeyNotFoundException();
             user.LastLoginDate = DateTime.UtcNow;
             await _context.SaveChangesAsync();
@@ -62,7 +62,7 @@ public class UsersService : IUsersService
             var result = await _context.Users.AddAsync(new User
             {
                 Login = registerUserRequest.Login,
-                Password = registerUserRequest.Password,
+                Password = BCrypt.Net.BCrypt.HashPassword(registerUserRequest.Password),
                 CreatedDate = DateTime.UtcNow,
                 LastLoginDate = DateTime.UtcNow
             });
@@ -74,4 +74,7 @@ public class UsersService : IUsersService
             throw new Exception("Something goes wrong during registration process", exception);
         }
     }
+
+    private static bool CheckPassword(string password, string hash)
+        => BCrypt.Net.BCrypt.Verify(password, hash);
 }

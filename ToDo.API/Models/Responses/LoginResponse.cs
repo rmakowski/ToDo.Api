@@ -15,6 +15,7 @@ public class LoginResponse : IObjectResponse<User, LoginResponse>
     /// <example>2022-02-20T20:40:31.459838Z</example>>
     public string LastLoginDate { get; set; } = null!;
 
+    /// <example>$2a$1few47H2GR41DV.wo1Sgwer3zQOdW.1e34se.2Pr32ewKmJVRYKweH0Ue1q</example>>
     public string Token { get; set; } = null!;
 
     public List<GetToDoItemsResponse> ToDoItems { get; set; } = null!;
