@@ -170,15 +170,16 @@ public class ToDoItemsService : IToDoItemsService
         var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"ToDoItems\" RESTART IDENTITY;");
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"Users\" RESTART IDENTITY;");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"ToDoItems\" RESTART IDENTITY CASCADE;");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"Users\" RESTART IDENTITY CASCADE;");
             await _context.Users.AddAsync(new User
             {
-                Login = "admin",
-                Password = "admin",
+                Login = "user",
+                Password = BCrypt.Net.BCrypt.HashPassword("user"),
                 CreatedDate = DateTime.UtcNow.AddSeconds(-713872),
                 LastLoginDate = DateTime.UtcNow
             });
+            await _context.SaveChangesAsync();
             await _context.ToDoItems.AddRangeAsync(new List<ToDoItem>
             {
                 new()
@@ -187,6 +188,7 @@ public class ToDoItemsService : IToDoItemsService
                     Description = "Read at least 10 books",
                     IsCompleted = false,
                     Priority = 2,
+                    UserId = 1,
                     CreatedDate = DateTime.UtcNow.AddSeconds(-713822),
                     UpdatedDate = DateTime.UtcNow.AddSeconds(-713822)
                 },
@@ -196,6 +198,7 @@ public class ToDoItemsService : IToDoItemsService
                     Description = "Buy: bread, butter, cheese",
                     IsCompleted = false,
                     Priority = 1,
+                    UserId = 1,
                     CreatedDate = DateTime.UtcNow.AddSeconds(-1412),
                     UpdatedDate = DateTime.UtcNow.AddSeconds(-1293)
                 },
@@ -205,6 +208,7 @@ public class ToDoItemsService : IToDoItemsService
                     Description = null,
                     IsCompleted = true,
                     Priority = 3,
+                    UserId = 1,
                     CreatedDate = DateTime.UtcNow.AddSeconds(-713222),
                     UpdatedDate = DateTime.UtcNow.AddSeconds(-7222)
                 },
@@ -214,6 +218,7 @@ public class ToDoItemsService : IToDoItemsService
                     Description = null,
                     IsCompleted = false,
                     Priority = 2,
+                    UserId = 1,
                     CreatedDate = DateTime.UtcNow.AddSeconds(-713622),
                     UpdatedDate = DateTime.UtcNow.AddSeconds(-713622)
                 },
@@ -223,6 +228,7 @@ public class ToDoItemsService : IToDoItemsService
                     Description = "Math, Chem",
                     IsCompleted = true,
                     Priority = 1,
+                    UserId = 1,
                     CreatedDate = DateTime.UtcNow.AddSeconds(-78374),
                     UpdatedDate = DateTime.UtcNow.AddSeconds(-7834)
                 }
