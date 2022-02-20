@@ -26,6 +26,7 @@ else
 }
 builder.Services.AddDbContext<ToDoContext>(options => options.UseNpgsql(defaultConnectionString));
 builder.Services.AddScoped<IToDoItemsService, ToDoItemsService>();
+builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(swaggerGenOptions =>

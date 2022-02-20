@@ -11,20 +11,20 @@ public interface IToDoItemsService
     /// <summary>
     /// Get list of ToDoItems
     /// </summary>
-    Task<IEnumerable<GetToDoItems>?> GetAll();
+    Task<IEnumerable<GetToDoItemsResponse>?> GetAll();
 
     /// <summary>
     /// Get ToDoItem with id
     /// </summary>
     /// <param name="id">Id of ToDoItem</param>
-    Task<GetToDoItem?> GetById(int id);
+    Task<GetToDoItemResponse?> GetById(int id);
 
     /// <summary>
     /// Update ToDoItem with id
     /// </summary>
     /// <param name="id">Id of ToDoItem</param>
     /// <param name="toDoItem">Updated ToDoItem</param>
-    Task<bool?> Update(int id, UpdateToDoItem toDoItem);
+    Task<bool?> Update(int id, UpdateToDoItemRequest toDoItem);
 
     /// <summary>
     /// Update ToDoItem IsCompleted flag for record with id
@@ -36,7 +36,7 @@ public interface IToDoItemsService
     /// Add ToDoItem
     /// </summary>
     /// <param name="toDoItem">ToDoItem to add</param>
-    Task<int?> Add(AddToDoItem toDoItem);
+    Task<int?> Add(AddToDoItemRequest toDoItem);
 
     /// <summary>
     /// Delete ToDoItem

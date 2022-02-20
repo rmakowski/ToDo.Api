@@ -2,7 +2,7 @@
 
 namespace ToDo.API.Models.Requests;
 
-public class UpdateToDoItem
+public class AddToDoItemRequest
 {
     /// <example>Name</example>>
     [Required]

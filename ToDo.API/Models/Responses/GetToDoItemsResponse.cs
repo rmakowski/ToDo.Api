@@ -3,7 +3,7 @@ using ToDo.API.Interfaces;
 
 namespace ToDo.API.Models.Responses;
 
-public class GetToDoItems : IObjectResponse<ToDoItem, GetToDoItems>
+public class GetToDoItemsResponse : IObjectResponse<ToDoItem, GetToDoItemsResponse>
 {
     /// <example>123</example>>
     public int Id { get; set; }
@@ -17,11 +17,11 @@ public class GetToDoItems : IObjectResponse<ToDoItem, GetToDoItems>
     /// <example>true</example>>
     public bool IsCompleted { get; set; }
 
-    public static Func<ToDoItem, GetToDoItems> Map
+    public static Func<ToDoItem, GetToDoItemsResponse> Map
     {
         get
         {
-            return toDoItem => new GetToDoItems
+            return toDoItem => new GetToDoItemsResponse
             {
                 Id = toDoItem.Id,
                 Name = toDoItem.Name,

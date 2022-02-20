@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ToDo.API.Interfaces;
 using ToDo.API.Models.Requests;
 using ToDo.API.Models.Responses;
@@ -10,12 +11,13 @@ namespace ToDo.API.Controllers;
 /// </summary>
 [Route("[controller]")]
 [ApiController]
+[Authorize]
 public class ToDoItemsController : ControllerBase
 {
     private readonly IToDoItemsService _toDoItemsService;
 
     /// <summary>
-    /// ToDoItems constructor
+    /// ToDoItems controller constructor
     /// </summary>
     /// <param name="toDoItemsService"></param>
     public ToDoItemsController(IToDoItemsService toDoItemsService)
@@ -28,17 +30,17 @@ public class ToDoItemsController : ControllerBase
     /// </summary>
     /// <response code="200">ToDoItems returned OK</response>
     [HttpGet]
-    [ProducesResponseType(typeof(ServiceResponse<IEnumerable<GetToDoItems>?>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ServiceResponse<IEnumerable<GetToDoItems>?>), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ServiceResponse<IEnumerable<GetToDoItems>?>>> GetAll()
+    [ProducesResponseType(typeof(ServiceResponse<IEnumerable<GetToDoItemsResponse>?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ServiceResponse<IEnumerable<GetToDoItemsResponse>?>), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ServiceResponse<IEnumerable<GetToDoItemsResponse>?>>> GetAll()
     {
         try
         {
-            return Ok(ServiceResponse<IEnumerable<GetToDoItems>?>.Ok(await _toDoItemsService.GetAll()));
+            return Ok(ServiceResponse<IEnumerable<GetToDoItemsResponse>?>.Ok(await _toDoItemsService.GetAll()));
         }
         catch (Exception exception)
         {
-            return BadRequest(ServiceResponse<IEnumerable<GetToDoItems>?>.Error(null, exception.Message));
+            return BadRequest(ServiceResponse<IEnumerable<GetToDoItemsResponse>?>.Error(null, exception.Message));
         }
     }
 
@@ -48,21 +50,21 @@ public class ToDoItemsController : ControllerBase
     /// <response code="200">ToDoItem returned OK</response>
     /// <param name="id">Id of ToDoItem</param>
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(ServiceResponse<GetToDoItem?>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ServiceResponse<GetToDoItem?>), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ServiceResponse<GetToDoItem?>>> GetById(int id)
+    [ProducesResponseType(typeof(ServiceResponse<GetToDoItemResponse?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ServiceResponse<GetToDoItemResponse?>), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ServiceResponse<GetToDoItemResponse?>>> GetById(int id)
     {
         try
         {
-            return Ok(ServiceResponse<GetToDoItem?>.Ok(await _toDoItemsService.GetById(id)));
+            return Ok(ServiceResponse<GetToDoItemResponse?>.Ok(await _toDoItemsService.GetById(id)));
         }
         catch (KeyNotFoundException exception)
         {
-            return NotFound(ServiceResponse<bool?>.Error(null, exception.Message));
+            return NotFound(ServiceResponse<GetToDoItemResponse?>.Error(null, exception.Message));
         }
         catch (Exception exception)
         {
-            return BadRequest(ServiceResponse<GetToDoItem?>.Error(null, exception.Message));
+            return BadRequest(ServiceResponse<GetToDoItemResponse?>.Error(null, exception.Message));
         }
     }
 
@@ -78,7 +80,7 @@ public class ToDoItemsController : ControllerBase
     [ProducesResponseType(typeof(ServiceResponse<bool?>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ServiceResponse<bool?>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ServiceResponse<bool?>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ServiceResponse<bool?>>> Update(int id, UpdateToDoItem toDoItem)
+    public async Task<ActionResult<ServiceResponse<bool?>>> Update(int id, UpdateToDoItemRequest toDoItem)
     {
         try
         {
@@ -128,7 +130,7 @@ public class ToDoItemsController : ControllerBase
     /// <param name="toDoItem">ToDoItem to add</param>
     [HttpPost]
     [ProducesResponseType(typeof(ServiceResponse<int?>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ServiceResponse<int?>>> Add(AddToDoItem toDoItem)
+    public async Task<ActionResult<ServiceResponse<int?>>> Add(AddToDoItemRequest toDoItem)
     {
         try
         {

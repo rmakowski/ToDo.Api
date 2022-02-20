@@ -1,9 +1,10 @@
-﻿using ToDo.API.Entities;
+﻿using System.Xml;
+using ToDo.API.Entities;
 using ToDo.API.Interfaces;
 
 namespace ToDo.API.Models.Responses;
 
-public class GetToDoItem : IObjectResponse<ToDoItem, GetToDoItem>
+public class GetToDoItemResponse : IObjectResponse<ToDoItem, GetToDoItemResponse>
 {
     /// <example>123</example>>
     public int Id { get; set; }
@@ -20,25 +21,25 @@ public class GetToDoItem : IObjectResponse<ToDoItem, GetToDoItem>
     /// <example>true</example>>
     public bool IsCompleted { get; set; }
 
-    /// <example>13:23:43 05.02.2022</example>>
+    /// <example>2022-02-20T20:40:31.459838Z</example>>
     public string CreatedDateUtc { get; set; } = null!;
 
-    /// <example>13:23:43 05.02.2022</example>>
+    /// <example>2022-02-20T20:40:31.459838Z</example>>
     public string UpdatedDateUtc { get; set; } = null!;
 
-    public static Func<ToDoItem, GetToDoItem> Map
+    public static Func<ToDoItem, GetToDoItemResponse> Map
     {
         get
         {
-            return toDoItem => new GetToDoItem
+            return toDoItem => new GetToDoItemResponse
             {
                 Id = toDoItem.Id,
                 Name = toDoItem.Name,
                 Description = toDoItem.Description,
                 Priority = toDoItem.Priority,
                 IsCompleted = toDoItem.IsCompleted,
-                CreatedDateUtc = toDoItem.CreatedDate.ToString("HH:mm:ss dd.MM.yyyy"),
-                UpdatedDateUtc = toDoItem.UpdatedDate.ToString("HH:mm:ss dd.MM.yyyy")
+                CreatedDateUtc = XmlConvert.ToString(toDoItem.CreatedDate, XmlDateTimeSerializationMode.Utc),
+                UpdatedDateUtc = XmlConvert.ToString(toDoItem.UpdatedDate, XmlDateTimeSerializationMode.Utc)
             };
         }
     }

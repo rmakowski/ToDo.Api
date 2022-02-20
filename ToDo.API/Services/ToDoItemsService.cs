@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ToDo.API.Contexts;
 using ToDo.API.Entities;
 using ToDo.API.Extensions;
@@ -27,12 +26,12 @@ public class ToDoItemsService : IToDoItemsService
     /// <summary>
     /// Get list of ToDoItems
     /// </summary>
-    public async Task<IEnumerable<GetToDoItems>?> GetAll()
+    public async Task<IEnumerable<GetToDoItemsResponse>?> GetAll()
     {
         try
         {
             var result = await _context.ToDoItems.ToListAsync();
-            return result.Select(GetToDoItems.Map).ToList();
+            return result.Select(GetToDoItemsResponse.Map).ToList();
         }
         catch (Exception exception)
         {
@@ -44,13 +43,13 @@ public class ToDoItemsService : IToDoItemsService
     /// Get ToDoItem with id
     /// </summary>
     /// <param name="id">Id of ToDoItem</param>
-    public async Task<GetToDoItem?> GetById(int id)
+    public async Task<GetToDoItemResponse?> GetById(int id)
     {
         try
         {
             var toDoItem = await _context.ToDoItems.FirstOrDefaultAsync(doItem => doItem.Id == id) ??
                            throw new KeyNotFoundException();
-            return toDoItem.Select(GetToDoItem.Map);
+            return toDoItem.Select(GetToDoItemResponse.Map);
         }
         catch (KeyNotFoundException exception)
         {
@@ -67,7 +66,7 @@ public class ToDoItemsService : IToDoItemsService
     /// </summary>
     /// <param name="id">Id of ToDoItem</param>
     /// <param name="toDoItem">Updated ToDoItem</param>
-    public async Task<bool?> Update(int id, UpdateToDoItem toDoItem)
+    public async Task<bool?> Update(int id, UpdateToDoItemRequest toDoItem)
     {
         try
         {
@@ -118,7 +117,7 @@ public class ToDoItemsService : IToDoItemsService
     /// Add ToDoItem
     /// </summary>
     /// <param name="toDoItem">ToDoItem to add</param>
-    public async Task<int?> Add(AddToDoItem toDoItem)
+    public async Task<int?> Add(AddToDoItemRequest toDoItem)
     {
         try
         {
@@ -172,6 +171,14 @@ public class ToDoItemsService : IToDoItemsService
         try
         {
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"ToDoItems\" RESTART IDENTITY;");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"Users\" RESTART IDENTITY;");
+            await _context.Users.AddAsync(new User
+            {
+                Login = "admin",
+                Password = "admin",
+                CreatedDate = DateTime.UtcNow.AddSeconds(-713872),
+                LastLoginDate = DateTime.UtcNow
+            });
             await _context.ToDoItems.AddRangeAsync(new List<ToDoItem>
             {
                 new()
