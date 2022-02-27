@@ -29,9 +29,9 @@ else
 {
     jwtSettings = new JwtSettings
     {
-        Audience = Environment.GetEnvironmentVariable("Jwt:Audience") ?? throw new NullReferenceException("Jwt:Audience is missing"),
-        Issuer = Environment.GetEnvironmentVariable("Jwt:Issuer") ?? throw new NullReferenceException("Jwt:Issuer is missing"),
-        Key = Environment.GetEnvironmentVariable("Jwt:Key") ?? throw new NullReferenceException("Jwt:Key is missing"),
+        Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? throw new NullReferenceException("JWT_AUDIENCE is missing"),
+        Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? throw new NullReferenceException("JWT_ISSUER is missing"),
+        Key = Environment.GetEnvironmentVariable("JWT_KEY") ?? throw new NullReferenceException("JWT_KEY is missing"),
         ExpireMinutes = builder.Configuration.GetValue<int>("Jwt:ExpireMinutes")
     };
     // Use connection string provided at runtime by Heroku
