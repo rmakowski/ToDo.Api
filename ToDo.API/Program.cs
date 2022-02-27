@@ -6,16 +6,34 @@ using System.Reflection;
 using System.Text;
 using ToDo.API.Contexts;
 using ToDo.API.Interfaces;
+using ToDo.API.Models;
 using ToDo.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 string defaultConnectionString;
+JwtSettings jwtSettings;
 if (builder.Environment.IsDevelopment())
+{
+    jwtSettings = new JwtSettings
+    {
+        Audience = builder.Configuration.GetValue<string>("Jwt:Audience"),
+        Issuer = builder.Configuration.GetValue<string>("Jwt:Issuer"),
+        Key = builder.Configuration.GetValue<string>("Jwt:Key"),
+        ExpireMinutes = builder.Configuration.GetValue<int>("Jwt:ExpireMinutes")
+    };
     defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+}
 else
 {
+    jwtSettings = new JwtSettings
+    {
+        Audience = Environment.GetEnvironmentVariable("Jwt:Audience") ?? throw new NullReferenceException("Jwt:Audience is missing"),
+        Issuer = Environment.GetEnvironmentVariable("Jwt:Issuer") ?? throw new NullReferenceException("Jwt:Issuer is missing"),
+        Key = Environment.GetEnvironmentVariable("Jwt:Key") ?? throw new NullReferenceException("Jwt:Key is missing"),
+        ExpireMinutes = builder.Configuration.GetValue<int>("Jwt:ExpireMinutes")
+    };
     // Use connection string provided at runtime by Heroku
     var connectionUrl = Environment.GetEnvironmentVariable("DATABASE_URL")!;
     connectionUrl = connectionUrl.Replace("postgres://", string.Empty);
@@ -28,6 +46,7 @@ else
     defaultConnectionString = $"Host={host};Database={database};Username={user};Password={password};SSL Mode=Require;Trust Server Certificate=true";
 }
 builder.Services.AddDbContext<ToDoContext>(options => options.UseNpgsql(defaultConnectionString));
+builder.Services.AddScoped(_ => jwtSettings);
 builder.Services.AddScoped<IToDoItemsService, ToDoItemsService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddControllers();
@@ -84,9 +103,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        ValidAudience = jwtSettings.Audience,
+        ValidIssuer = jwtSettings.Issuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
     };
 });
 

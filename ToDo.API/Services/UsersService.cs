@@ -8,6 +8,7 @@ using ToDo.API.Contexts;
 using ToDo.API.Entities;
 using ToDo.API.Extensions;
 using ToDo.API.Interfaces;
+using ToDo.API.Models;
 using ToDo.API.Models.Requests;
 using ToDo.API.Models.Responses;
 
@@ -19,15 +20,17 @@ namespace ToDo.API.Services;
 public class UsersService : IUsersService
 {
     private readonly ToDoContext _context;
+    private readonly JwtSettings _jwtSettings;
     private readonly IConfiguration _configuration;
 
     /// <summary>
     /// Users service constructor
     /// </summary>
-    public UsersService(ToDoContext context, IConfiguration config)
+    public UsersService(ToDoContext context, IConfiguration config, JwtSettings jwtSettings)
     {
         _context = context;
         _configuration = config;
+        _jwtSettings = jwtSettings;
     }
 
     /// <summary>
@@ -51,13 +54,13 @@ public class UsersService : IUsersService
                 new Claim(JwtRegisteredClaimNames.Iat, XmlConvert.ToString(DateTime.UtcNow, XmlDateTimeSerializationMode.Utc)),
                 new Claim("Id", user.Id.ToString())
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Jwt:Key")));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
-                _configuration.GetValue<string>("Jwt:Issuer"),
-                _configuration.GetValue<string>("Jwt:Audience"),
+                _jwtSettings.Issuer,
+                _jwtSettings.Audience,
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("Jwt:ExpireMinutes")),
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpireMinutes),
                 signingCredentials: signIn);
             loginResponse.Token = new JwtSecurityTokenHandler().WriteToken(token);
             return loginResponse;
@@ -115,13 +118,13 @@ public class UsersService : IUsersService
                 new Claim(JwtRegisteredClaimNames.Iat, XmlConvert.ToString(DateTime.UtcNow, XmlDateTimeSerializationMode.Utc)),
                 new Claim("Id", user.Id.ToString())
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Jwt:Key")));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
-                _configuration.GetValue<string>("Jwt:Issuer"),
-                _configuration.GetValue<string>("Jwt:Audience"),
+                _jwtSettings.Issuer,
+                _jwtSettings.Audience,
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("Jwt:ExpireMinutes")),
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpireMinutes),
                 signingCredentials: signIn);
             loginResponse.Token = new JwtSecurityTokenHandler().WriteToken(token);
             await RestoreDefault(user.Id);
