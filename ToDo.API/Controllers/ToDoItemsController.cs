@@ -166,23 +166,4 @@ public class ToDoItemsController : ControllerBase
             return BadRequest(ServiceResponse<bool?>.Error(null, exception.Message));
         }
     }
-
-    /// <summary>
-    /// Reset database with default values
-    /// </summary>
-    /// <response code="200">Reset database OK</response>
-    [HttpGet("restore")]
-    [ProducesResponseType(typeof(ServiceResponse<bool?>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ServiceResponse<bool?>), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ServiceResponse<bool?>>> RestoreDefault()
-    {
-        try
-        {
-            return Ok(ServiceResponse<bool?>.Ok(await _toDoItemsService.RestoreDefault()));
-        }
-        catch (Exception exception)
-        {
-            return BadRequest(ServiceResponse<bool?>.Error(null, exception.Message));
-        }
-    }
 }

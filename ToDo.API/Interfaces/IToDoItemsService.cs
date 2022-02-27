@@ -43,9 +43,4 @@ public interface IToDoItemsService
     /// </summary>
     /// <param name="id">Id of ToDoItem</param>
     Task<bool?> Delete(int id);
-
-    /// <summary>
-    /// Reset database with default values
-    /// </summary>
-    Task<bool?> RestoreDefault();
 }

@@ -18,8 +18,6 @@ public class LoginResponse : IObjectResponse<User, LoginResponse>
     /// <example>12345abcdef</example>>
     public string Token { get; set; } = null!;
 
-    public List<GetToDoItemsResponse> ToDoItems { get; set; } = null!;
-
     public static Func<User, LoginResponse> Map
     {
         get
@@ -28,8 +26,7 @@ public class LoginResponse : IObjectResponse<User, LoginResponse>
             {
                 Login = user.Login,
                 CreatedDate = XmlConvert.ToString(user.CreatedDate, XmlDateTimeSerializationMode.Utc),
-                LastLoginDate = XmlConvert.ToString(user.LastLoginDate, XmlDateTimeSerializationMode.Utc),
-                ToDoItems = user.ToDoItems.Select(GetToDoItemsResponse.Map).ToList()
+                LastLoginDate = XmlConvert.ToString(user.LastLoginDate, XmlDateTimeSerializationMode.Utc)
             };
         }
     }

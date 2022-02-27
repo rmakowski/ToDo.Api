@@ -67,4 +67,27 @@ public class UsersController : ControllerBase
             return BadRequest(ServiceResponse<bool?>.Error(null, exception.Message));
         }
     }
+
+    /// <summary>
+    /// Login demo user
+    /// </summary>
+    /// <response code="200">User log in OK</response>
+    [HttpPost("loginAsDemo")]
+    [ProducesResponseType(typeof(ServiceResponse<LoginResponse?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ServiceResponse<LoginResponse?>), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ServiceResponse<LoginResponse?>>> LoginAsDemo()
+    {
+        try
+        {
+            return Ok(ServiceResponse<LoginResponse?>.Ok(await _usersService.LoginAsDemo()));
+        }
+        catch (KeyNotFoundException exception)
+        {
+            return NotFound(ServiceResponse<LoginResponse?>.Error(null, exception.Message));
+        }
+        catch (Exception exception)
+        {
+            return BadRequest(ServiceResponse<LoginResponse?>.Error(null, exception.Message));
+        }
+    }
 }

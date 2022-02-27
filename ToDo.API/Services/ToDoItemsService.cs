@@ -35,7 +35,7 @@ public class ToDoItemsService : IToDoItemsService
         }
         catch (Exception exception)
         {
-            throw new Exception("Something goes wrong during getting list of items", exception);
+            throw new Exception("An unexpected error has occurred during getting list of items", exception);
         }
     }
 
@@ -57,7 +57,7 @@ public class ToDoItemsService : IToDoItemsService
         }
         catch (Exception exception)
         {
-            throw new Exception("Something goes wrong during getting item", exception);
+            throw new Exception("An unexpected error has occurred during getting item", exception);
         }
     }
 
@@ -85,7 +85,7 @@ public class ToDoItemsService : IToDoItemsService
         }
         catch (Exception exception)
         {
-            throw new Exception("Something goes wrong during updating item", exception);
+            throw new Exception("An unexpected error has occurred during updating item", exception);
         }
     }
 
@@ -109,7 +109,7 @@ public class ToDoItemsService : IToDoItemsService
         }
         catch (Exception exception)
         {
-            throw new Exception("Something goes wrong during changing status of the item", exception);
+            throw new Exception("An unexpected error has occurred during changing status of the item", exception);
         }
     }
 
@@ -135,7 +135,7 @@ public class ToDoItemsService : IToDoItemsService
         }
         catch (Exception exception)
         {
-            throw new Exception("Something goes wrong during adding new item", exception);
+            throw new Exception("An unexpected error has occurred during adding new item", exception);
         }
     }
 
@@ -158,89 +158,7 @@ public class ToDoItemsService : IToDoItemsService
         }
         catch (Exception exception)
         {
-            throw new Exception("Something goes wrong during deleting item", exception);
-        }
-    }
-
-    /// <summary>
-    /// Reset database with default values
-    /// </summary>
-    public async Task<bool?> RestoreDefault()
-    {
-        var transaction = await _context.Database.BeginTransactionAsync();
-        try
-        {
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"ToDoItems\" RESTART IDENTITY CASCADE;");
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"Users\" RESTART IDENTITY CASCADE;");
-            await _context.Users.AddAsync(new User
-            {
-                Login = "user",
-                Password = BCrypt.Net.BCrypt.HashPassword("user"),
-                CreatedDate = DateTime.UtcNow.AddSeconds(-713872),
-                LastLoginDate = DateTime.UtcNow
-            });
-            await _context.SaveChangesAsync();
-            await _context.ToDoItems.AddRangeAsync(new List<ToDoItem>
-            {
-                new()
-                {
-                    Name = "Read book",
-                    Description = "Read at least 10 books",
-                    IsCompleted = false,
-                    Priority = 2,
-                    UserId = 1,
-                    CreatedDate = DateTime.UtcNow.AddSeconds(-713822),
-                    UpdatedDate = DateTime.UtcNow.AddSeconds(-713822)
-                },
-                new()
-                {
-                    Name = "Go to the shop",
-                    Description = "Buy: bread, butter, cheese",
-                    IsCompleted = false,
-                    Priority = 1,
-                    UserId = 1,
-                    CreatedDate = DateTime.UtcNow.AddSeconds(-1412),
-                    UpdatedDate = DateTime.UtcNow.AddSeconds(-1293)
-                },
-                new()
-                {
-                    Name = "Call to grandpa",
-                    Description = null,
-                    IsCompleted = true,
-                    Priority = 3,
-                    UserId = 1,
-                    CreatedDate = DateTime.UtcNow.AddSeconds(-713222),
-                    UpdatedDate = DateTime.UtcNow.AddSeconds(-7222)
-                },
-                new()
-                {
-                    Name = "Clean house",
-                    Description = null,
-                    IsCompleted = false,
-                    Priority = 2,
-                    UserId = 1,
-                    CreatedDate = DateTime.UtcNow.AddSeconds(-713622),
-                    UpdatedDate = DateTime.UtcNow.AddSeconds(-713622)
-                },
-                new()
-                {
-                    Name = "Do homework",
-                    Description = "Math, Chem",
-                    IsCompleted = true,
-                    Priority = 1,
-                    UserId = 1,
-                    CreatedDate = DateTime.UtcNow.AddSeconds(-78374),
-                    UpdatedDate = DateTime.UtcNow.AddSeconds(-7834)
-                }
-            });
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-            return true;
-        }
-        catch (Exception exception)
-        {
-            await transaction.RollbackAsync();
-            throw new Exception("Something goes wrong during restoring default values in database", exception);
+            throw new Exception("An unexpected error has occurred during deleting item", exception);
         }
     }
 }

@@ -19,4 +19,9 @@ public interface IUsersService
     /// </summary>
     /// <param name="registerUserRequest">User to register</param>
     Task<bool?> Register(RegisterUserRequest registerUserRequest);
+
+    /// <summary>
+    /// Login demo user
+    /// </summary>
+    Task<LoginResponse?> LoginAsDemo();
 }
